@@ -1,3 +1,10 @@
+/*
+CIS 457
+Project 1 part 1
+Java client server file transfer
+Jonathan Powers, Kevin Anderson, Brett Greenman
+ */
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
