@@ -2,5 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="D:/Kevin&apos;s Stuff/programming/GitLab Projects/Java/CIS457_P1_FS/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="D:/Kevin&apos;s Stuff/programming/GitLab Projects/Java/CIS457_P1_FS/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

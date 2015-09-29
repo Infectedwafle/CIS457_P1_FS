@@ -1,14 +1,18 @@
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 
 
 public class Server {
@@ -57,25 +61,20 @@ public class Server {
 		PrintStream output = new PrintStream(socket.getOutputStream(), true);
 		InputStream fileIn = null;
 		
-
-		
-		File file = new File ("Data/" + fileName);
+		File file = new File ("../Data/" + fileName);
 		fileIn = new FileInputStream(file);
 		
-		output.println("HTTP/1.1 200 OK");
-		output.println("Content-Length: " + file.length());
-		output.println("Connection: close");
-		output.println("");
-		
 		byte[] buffer = new byte[1024];
-        int amountRead = fileIn.read(buffer); // read up to 1024 bytes of raw data
-		while(amountRead > 0){
+        int amountRead = fileIn.read(buffer);
+        
+        while(amountRead > 0){
 			 output.write(buffer, 0, amountRead); // write data back out to an OutputStream
 			 amountRead = fileIn.read(buffer);
 		}
+		
+		output.println("");
 		fileIn.close();
 		output.println("");
-		output.close();
 	    System.out.println("File transfered.");
 	}
 }
