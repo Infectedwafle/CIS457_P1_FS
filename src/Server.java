@@ -1,6 +1,11 @@
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,23 +39,43 @@ public class Server {
 	
 	public void handleConnection(Socket socket) throws IOException{
 		BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	    PrintStream output = new PrintStream(socket.getOutputStream(), true);
 	    
 	    String line;
 	    
 	    line = input.readLine();
 	    System.out.println(line);
 	    if(line != null){
-	      processRequest(line);
+	      processRequest(line, socket);
 	    }	
 	    
 	    input.close();
-	    output.close();
 	    socket.close();
 	    clientNum--;
 	}
 	
-	public void processRequest(String fileName) throws IOException{
+	public void processRequest(String fileName, Socket socket) throws IOException{
+		PrintStream output = new PrintStream(socket.getOutputStream(), true);
+		InputStream fileIn = null;
 		
+
+		
+		File file = new File ("Data/" + fileName);
+		fileIn = new FileInputStream(file);
+		
+		output.println("HTTP/1.1 200 OK");
+		output.println("Content-Length: " + file.length());
+		output.println("Connection: close");
+		output.println("");
+		
+		byte[] buffer = new byte[1024];
+        int amountRead = fileIn.read(buffer); // read up to 1024 bytes of raw data
+		while(amountRead > 0){
+			 output.write(buffer, 0, amountRead); // write data back out to an OutputStream
+			 amountRead = fileIn.read(buffer);
+		}
+		fileIn.close();
+		output.println("");
+		output.close();
+	    System.out.println("File transfered.");
 	}
 }
