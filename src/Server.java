@@ -36,14 +36,16 @@ public class Server {
 			System.out.println("Connection Started: " + clientNum);
 	    	final Socket socket = serverSocket.accept();
 	    	new Thread(new Runnable() {
-	    		@Override
-	    		public void run() {
-	    			try {
-	    				handleConnection(socket);
-	    			} catch (IOException e) {
-	    				e.printStackTrace();
-	    			}
+	    	    @Override
+	    	    public void run() {
+	    		try {
+	    		    handleConnection(socket);
+	    		} catch (IOException e) {
+	    			//	e.printStackTrace();
+	    		     System.out.println("Client disconnected unexpectedly.");
+	    		     clientNum--;
 	    		}
+	            }
 	    	}).start();
 	    }	    
 	}
