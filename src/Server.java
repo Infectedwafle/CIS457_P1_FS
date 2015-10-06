@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-
+import java.io.FileNotFoundException;
 
 public class Server {
 	private String method = null;
@@ -33,18 +33,28 @@ public class Server {
 		ServerSocket serverSocket = new ServerSocket(9876);
 		
 		for (clientNum = 0; true; clientNum++) {
-			System.out.println("Connection Started: " + clientNum);
+			System.out.println("Active Connections: " + clientNum);
 	    	final Socket socket = serverSocket.accept();
 	    	new Thread(new Runnable() {
 	    	    @Override
 	    	    public void run() {
-	    		try {
+			boolean keepErGoin = true;
+			tryagain:
+			while (keepErGoin){
+			try {
+			    //tryagain:
 	    		    handleConnection(socket);
-	    		} catch (IOException e) {
+	    		} catch (FileNotFoundException e){
+			    System.out.println("File not found...");
+			    continue tryagain;
+			} catch (IOException e) {
 	    			//	e.printStackTrace();
 	    		     System.out.println("Client disconnected unexpectedly.");
 	    		     clientNum--;
+			     System.out.println("Active Connections: " + clientNum);
 	    		}
+			keepErGoin = false;
+			}
 	            }
 	    	}).start();
 	    }	    
@@ -69,21 +79,22 @@ public class Server {
 	public void processRequest(String fileName, Socket socket) throws IOException{
 		PrintStream output = new PrintStream(socket.getOutputStream(), true);
 		InputStream fileIn = null;
+		//try{
+		        File file = new File ("../Data/" + fileName);
+		    	fileIn = new FileInputStream(file);
 		
-		File file = new File ("../Data/" + fileName);
-		fileIn = new FileInputStream(file);
-		
-		byte[] buffer = new byte[1024];
-        int amountRead = fileIn.read(buffer);
-        
-        while(amountRead > 0){
-			 output.write(buffer, 0, amountRead); // write data back out to an OutputStream
-			 amountRead = fileIn.read(buffer);
-		}
-		
-		output.println("");
-		fileIn.close();
-		output.println("");
-	    System.out.println("File transfered.");
+			byte[] buffer = new byte[1024];
+			int amountRead = fileIn.read(buffer);
+			while(amountRead > 0){
+			    output.write(buffer, 0, amountRead); // write data back out to an OutputStream
+			    amountRead = fileIn.read(buffer);
+			}
+			output.println("");
+			fileIn.close();
+			output.println("");
+			System.out.println("File transfered.");
+			//} catch (FileNotFoundException e){
+			// System.out.println("File not found...");
+			//}
 	}
 }
