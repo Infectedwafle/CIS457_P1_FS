@@ -5,22 +5,11 @@ Java client server file transfer
 Jonathan Powers, Kevin Anderson, Brett Greenman
  */
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.io.FileNotFoundException;
 
 public class Server {
 	private String method = null;
@@ -38,22 +27,23 @@ public class Server {
 	    	new Thread(new Runnable() {
 	    	    @Override
 	    	    public void run() {
-			boolean keepErGoin = true;
-			tryagain:
-			while (keepErGoin){
+			//boolean keepErGoin = true;
+			//tryagain:
+			//while (keepErGoin){
 			try {
 			    //tryagain:
 	    		    handleConnection(socket);
-	    		} catch (FileNotFoundException e){
-			    System.out.println("File not found...");
-			    continue tryagain;
-			} catch (IOException e) {
+	    		} //catch (FileNotFoundException e){
+			//System.out.println("File not found...");
+			    // continue tryagain;
+			//}
+			catch (IOException e) {
 	    			//	e.printStackTrace();
 	    		     System.out.println("Client disconnected unexpectedly.");
 	    		     clientNum--;
 			     System.out.println("Active Connections: " + clientNum);
-	    		}
-			keepErGoin = false;
+			     //}
+			//keepErGoin = false;
 			}
 	            }
 	    	}).start();
@@ -79,7 +69,7 @@ public class Server {
 	public void processRequest(String fileName, Socket socket) throws IOException{
 		PrintStream output = new PrintStream(socket.getOutputStream(), true);
 		InputStream fileIn = null;
-		//try{
+		try{
 		        File file = new File ("../Data/" + fileName);
 		    	fileIn = new FileInputStream(file);
 		
@@ -93,8 +83,14 @@ public class Server {
 			fileIn.close();
 			output.println("");
 			System.out.println("File transfered.");
-			//} catch (FileNotFoundException e){
-			// System.out.println("File not found...");
-			//}
+			} 
+		catch (FileNotFoundException e){
+		    //String errorMessage = "FileNotFound";
+		    //try{
+		    //	output.write(null);
+		    //} catch (NullPointerException ex){}
+		    output.println("File does not exist");
+	            System.out.println("File not found...");	    
+		}
 	}
 }
